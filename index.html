@@ -1,1 +1,182 @@
-test
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Escape!</title>
+
+    <style>
+
+     button {
+       padding: 7px 15px;
+       color: white;
+       background-color: #007bff;
+       border-radius: 4px;
+       border: none;
+       font-size: 1rem;
+     }
+
+     button:hover {
+       background-color: #0069d9;
+     }
+
+     button:active {
+       background-color: #0062cc;
+     }
+
+     body {
+       font-family: monospace;
+     }
+
+     body > div.main {
+       position: fixed;
+       top: 40%;
+       left: 50%;
+       width: 400px;
+       text-align: center;
+       -webkit-transform: translate(-50%, -50%);
+       transform: translate(-50%, -50%);
+     }
+
+     #stage-time {
+       font-size: 100px;
+       margin-bottom: 50px;
+     }
+
+     body > div.main > .l-progress > * {
+       display: table-cell;
+       padding: 0 5px 0 5px;
+     }
+
+     body > div.main > .start {
+       margin-top: 20px;
+     }
+    </style>
+
+    <script>
+
+     timers = [
+         20,
+         236,
+         408,
+         600
+     ];
+
+     bubbles = [];
+
+     function getTime(diff) {
+         var secs = Math.floor(diff % 60);
+         var mins = Math.floor(diff / 60);
+         return mins + ':' + (secs < 10 ? '0' : '') + secs;
+     }
+
+     function init() {
+         var totalTime = document.getElementById('total-time');
+         totalTime.innerHTML = getTime(timers[timers.length - 1]);
+
+         var music = document.getElementById('music');
+         var xmlns = "http://www.w3.org/2000/svg";
+         var progress = document.getElementById('progress');
+         var curProgress = document.getElementById('cur-progress');
+         bubbles = timers.map(function (timer){
+             var svgElem = document.createElementNS (xmlns, "circle");
+             svgElem.setAttributeNS (null, "cx", (timer * 1000) / music.duration);
+             svgElem.setAttributeNS (null, "cy", 29);
+             svgElem.setAttributeNS (null, "r", 15);
+             svgElem.setAttributeNS (null, "stroke", '#e9ecef');
+             svgElem.setAttributeNS (null, "fill", '#e9ecef');
+             progress.insertBefore(svgElem, curProgress);
+             return svgElem;
+         });
+     }
+
+     function updateTime() {
+         var music = document.getElementById('music');
+         var elapsed = music.currentTime;
+         var curProgress = document.getElementById('cur-progress');
+         var stageTime = document.getElementById('stage-time');
+         var mainTime = document.getElementById('main-time');
+         var totalTime = document.getElementById('total-time');
+
+         var stageTimeLeft = 0;
+         var timeLeft = Math.max(timers[timers.length - 1] - elapsed, 0);
+
+         for (var i = timers.length - 1; i >= 0; --i) {
+             var timer = timers[i];
+             var bubble = bubbles[i];
+             if (elapsed >= timer) {
+                 bubbles[i].setAttribute('stroke', '#007bff');
+                 bubbles[i].setAttribute('fill', '#007bff');
+             } else {
+                 stageTimeLeft = timer - elapsed;
+             }
+         }
+         stageTime.innerHTML = getTime(stageTimeLeft);
+         mainTime.innerHTML = getTime(music.currentTime);
+         totalTime.innerHTML = getTime(timeLeft);
+         var percentDone;
+         if (elapsed < timers[3]) {
+             percentDone = elapsed / music.duration;
+         } else {
+             percentDone = 100;
+         }
+         curProgress.setAttribute('width', 1000 * percentDone);
+     }
+
+
+     stop = null;
+
+
+     function start() {
+         var music = document.getElementById('music');
+         var startButton = document.getElementById('start-button');
+         if (!music.paused && music.currentTime == 0) {
+
+             var curProgress = document.getElementById('cur-progress');
+             curProgress.setAttribute('width', 0);
+
+             startButton.innerHTML = 'Pause';
+             music.play();
+             stop = setInterval(updateTime, 100);
+         } else if (!music.paused) {
+             music.pause();
+             clearInterval(stop);
+             startButton.innerHTML = 'Continue';
+         } else {
+             startButton.innerHTML = 'Pause';
+             music.play();
+             stop = setInterval(updateTime, 100);
+         }
+     }
+
+    </script>
+
+  </head>
+  <body onload="init()">
+
+    <div class="main">
+      <div id="stage-time">0:00</div>
+      <div class="l-progress">
+        <div id="main-time" class="main-time">0:00</div>
+        <div>
+          <svg id="progress" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+               viewBox="0 0 1000 50">
+            <rect y="25" x="0" height="8" width="1000" style="fill:#e9ecef;stroke-width:0;stroke:rgb(0,0,0)"></rect>
+            <rect id="cur-progress" y="25" x="0" height="8" width="0" style="fill:#007bff;stroke-width:0;stroke:rgb(0,0,0)"></rect>
+          </svg>
+        </div>
+        <div id="total-time">10:00</div>
+      </div>
+      <div id="stage-name">
+
+      </div>
+      <div class="start">
+        <button id="start-button" class="btn btn-primary" onclick="start()">Begin</button>
+      </div>
+    </div>
+
+    <audio id="music" src="../Soundtrack/Yackity Yak.mp3"></audio>
+  </body>
+</html>
