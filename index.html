@@ -117,11 +117,7 @@
          mainTime.innerHTML = getTime(music.currentTime);
          totalTime.innerHTML = getTime(timeLeft);
          var percentDone;
-         if (elapsed < timers[3]) {
-             percentDone = elapsed / music.duration;
-         } else {
-             percentDone = 100;
-         }
+         percentDone = elapsed / music.duration;
          curProgress.setAttribute('width', 1000 * percentDone);
      }
 
