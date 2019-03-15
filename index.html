@@ -101,7 +101,7 @@
          var totalTime = document.getElementById('total-time');
 
          var stageTimeLeft = 0;
-         var timeLeft = Math.max(timers[timers.length - 1] - elapsed, 0);
+         var timeLeft = Math.max(timers[timers.length - 1] - elapsed + 1, 0);
 
          for (var i = timers.length - 1; i >= 0; --i) {
              var timer = timers[i];
@@ -110,7 +110,7 @@
                  bubbles[i].setAttribute('stroke', '#007bff');
                  bubbles[i].setAttribute('fill', '#007bff');
              } else {
-                 stageTimeLeft = timer - elapsed;
+                 stageTimeLeft = timer - elapsed + 1;
              }
          }
          stageTime.innerHTML = getTime(stageTimeLeft);
