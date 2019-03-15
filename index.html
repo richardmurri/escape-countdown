@@ -135,7 +135,7 @@
 
              startButton.innerHTML = 'Pause';
              music.play();
-             stop = setInterval(updateTime, 100);
+             stop = setInterval(updateTime, 200);
          } else if (!music.paused) {
              music.pause();
              clearInterval(stop);
@@ -143,7 +143,7 @@
          } else {
              startButton.innerHTML = 'Pause';
              music.play();
-             stop = setInterval(updateTime, 100);
+             stop = setInterval(updateTime, 200);
          }
      }
 
